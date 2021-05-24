@@ -1,0 +1,26 @@
+﻿@{
+    String mensaje = ViewData["MENSAJE"] as String;
+    String titulo = ViewData["TITULO"] as String;
+    String tipo = ViewData["TIPO"] as String;
+    String mostrarMensaje = ViewData["MOSTRARMENSAJE"] as String;
+}
+
+@section Scripts{
+    <script type="text/javascript">
+        $(function () {
+            $(window).ready(function () {
+                if (("@mostrarMensaje" == "true")) {
+                    if ("@(tipo)" == "SUCCESS") {
+                        toastr.success("@(mensaje)" , "@(titulo)" );
+                    } else if ("@(tipo)" == "INFO") {
+                        toastr.info("@mensaje", "@titulo");
+                    } else if ("@(tipo)" == "DANGER") {
+                        toastr.danger("@mensaje", "@titulo");
+                    } else if ("@(tipo)" == "WARNING") {
+                        toastr.warning("@mensaje", "@titulo");
+                    }
+                }
+            })
+        })
+    </script>
+}

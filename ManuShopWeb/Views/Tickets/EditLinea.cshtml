@@ -1,0 +1,73 @@
+﻿@model ManuShopWeb.Models.LineasTicket
+
+@{
+    ViewData["Title"] = "EditLinea";
+    List<VersionesProducto> versionesProductos = ViewData["VERSIONESPRODUCTOS"] as List<VersionesProducto>;
+    List<Producto> productos = ViewData["PRODUCTOS"] as List<Producto>;
+    List<Marca> marcas = ViewData["MARCAS"] as List<Marca>;
+    List<Almacen> almacen = ViewData["ALMACEN"] as List<Almacen>;
+}
+
+<h1>Editar linea</h1>
+
+<h4>Lineas de ticket</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="EditLinea">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group" hidden>
+                <label asp-for="id" hidden class="control-label"></label>
+                <input asp-for="id" hidden class="form-control" />
+                <span asp-validation-for="id" hidden class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ticket" hidden class="control-label"></label>
+                <input asp-for="ticket" hidden class="form-control" />
+                <span asp-validation-for="ticket" hidden class="text-danger"></span>
+            </div>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="inputGroupSelect01">Producto</label>
+                </div>
+                <select class="custom-select" name="producto" id="inputGroupSelect01" asp-for="versionProducto">
+                    @foreach (Producto prod in productos)
+                    {
+                        <optgroup label="@(prod.nombre + " (" + marcas.First(x => x.id == prod.marca).nombre + ")")">
+                            @foreach (VersionesProducto versionProducto in versionesProductos.Where(x => x.producto == prod.id))
+                            {
+                                <option value="@versionProducto.id" disabled="@(almacen.Where(x => x.versionProducto == versionProducto.id).First().cantidad == 0)">@(versionProducto.nombre.ToLower() == "default" ? "Normal" : versionProducto.nombre) (@(almacen.Where(x => x.versionProducto == versionProducto.id).First().cantidad) unidades)</option>
+                            }
+                        </optgroup>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="descuento" class="control-label"></label>
+                <input asp-for="descuento" class="form-control" />
+                <span asp-validation-for="descuento" class="text-danger"></span>
+            </div>
+            <div class="form-group" hidden>
+                <label asp-for="detalles" hidden class="control-label"></label>
+                <input asp-for="detalles" hidden class="form-control" />
+                <span asp-validation-for="detalles" hidden class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="cantidad" class="control-label"></label>
+                <input asp-for="cantidad" class="form-control" />
+                <span asp-validation-for="cantidad" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Guardar" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="VerTicket" asp-route-ticket="@Model.ticket" asp-route-origen="TRABAJADOR" class="btn btn-outline-dark">Volver al listado</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

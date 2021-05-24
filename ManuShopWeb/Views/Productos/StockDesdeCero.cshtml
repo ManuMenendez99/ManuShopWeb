@@ -1,0 +1,41 @@
+﻿@{ 
+    List<Tienda> tiendas = ViewData["TIENDAS"] as List<Tienda>;
+    List<VersionesProducto> versiones = ViewData["VERSIONES"] as List<VersionesProducto>;
+    List<Producto> productos = ViewData["PRODUCTOS"] as List<Producto>;
+    List<Marca> marcas = ViewData["MARCAS"] as List<Marca>;
+    List<Franquicia> franquicias = ViewData["FRANQUICIAS"] as List<Franquicia>;
+
+    String email = ViewData["EMAIL"].ToString();
+}
+
+<form method="post">
+    <div class="form-group">
+        <label for="exampleFormControlSelect1">Elegir tienda</label>
+        <select class="form-control" name="tienda" id="exampleFormControlSelect1">
+            @foreach (Tienda tienda in tiendas)
+            {
+                <option value="@tienda.id">@tienda.nombre (@tienda.direccion) - @(franquicias.First(x => x.id == tienda.franquicia).nombre)</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="exampleFormControlSelect1">Elegir producto</label>
+        <select class="form-control" name="producto" id="exampleFormControlSelect1">
+            @foreach (VersionesProducto version in versiones)
+            {
+                <option value="@version.id">@(productos.First(x => x.id == version.producto).marca) @productos.First(x => x.id == version.producto).nombre - (@(version.nombre))</option>
+            }
+        </select>
+    </div>
+
+    <div class="input-group mb-3">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">Cantidad</span>
+        </div>
+        <input type="number" class="form-control" placeholder="Cantidad" aria-label="Cantidad" name="cantidad" aria-describedby="basic-addon1">
+    </div>
+
+    <button type="submit" class="btn btn-outline-primary">Crear stock</button>
+
+</form>

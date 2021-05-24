@@ -1,0 +1,56 @@
+﻿@model List<Producto>
+@{
+    List<Almacen> almacen = ViewData["ALMACEN"] as List<Almacen>;
+    List<VersionesProducto> versionesProductos = ViewData["VERSIONESPRODUCTOS"] as List<VersionesProducto>;
+    List<Producto> productos = ViewData["PRODUCTOS"] as List<Producto>;
+    List<Marca> marcas = ViewData["MARCAS"] as List<Marca>;
+    Ticket ticket = ViewData["TICKET"] as Ticket;
+    String origen = ViewData["ORIGEN"].ToString();
+    String error = ViewData["ERROR"] != null ? ViewData["ERROR"].ToString() : null;
+}
+
+<div class="container">
+
+    @if (error != null)
+    {
+        <div class="alert alert-warning" role="alert">
+            @error
+        </div>
+    }
+
+    <form method="post">
+
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <label class="input-group-text" for="inputGroupSelect01">Producto</label>
+            </div>
+            <select class="custom-select" name="producto" id="inputGroupSelect01">
+
+                @foreach (Producto prod in productos)
+                {
+                    <optgroup label="@(prod.nombre + " (" + marcas.First(x => x.id == prod.marca).nombre + ")")">
+                        @foreach (VersionesProducto versionProducto in versionesProductos.Where(x => x.producto == prod.id))
+                        {
+                            <option value="@versionProducto.id" disabled="@(almacen.Where(x => x.versionProducto == versionProducto.id).First().cantidad == 0)">@(versionProducto.nombre.ToLower() == "default" ? "Normal" : versionProducto.nombre) (@(almacen.Where(x => x.versionProducto == versionProducto.id).First().cantidad) unidades)</option>
+                        }
+                    </optgroup>
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="exampleInputPassword1">Cantidad</label>
+            <input type="number" name="cantidad" min="1" max="15" class="form-control" id="exampleInputPassword1" placeholder="Minimo 1 y maximo 15">
+        </div>
+
+        <div class="form-group">
+            <label for="exampleFormControlTextarea1">Observaciones</label>
+            <textarea class="form-control" id="exampleFormControlTextarea1" name="detalles" rows="3"></textarea>
+        </div>
+
+
+        <input hidden value="@ticket.id" name="ticket" />
+        <input hidden value="@origen" name="origen" />
+
+        <button type="submit" class="btn btn-outline-success">Hacer pedido</button>
+    </form>
+</div>

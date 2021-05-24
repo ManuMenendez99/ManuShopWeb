@@ -1,0 +1,67 @@
+﻿@model ManuShopWeb.Models.Producto
+
+@{
+    ViewData["Title"] = "Edit";
+    List<Marca> marcas = ViewData["MARCAS"] as List<Marca>;
+    List<VersionesProducto> versiones = ViewData["VERSIONES"] as List<VersionesProducto>;
+    String email = ViewData["EMAIL"].ToString();
+}
+
+<h1>Edit</h1>
+
+<h4>Producto</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+
+            <div class="form-group">
+                <label for="exampleFormControlSelect1">Elegir marca</label>
+                <select class="form-control" name="marca" value="@Model.marca" id="exampleFormControlSelect1">
+                    @foreach (Marca marca in marcas)
+                    {
+                        <option value="@marca.id">@marca.nombre</option>
+                    }
+                </select>
+            </div>
+
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1">Nombre del producto</span>
+                </div>
+                <input type="text" class="form-control" placeholder="Username" name="productoNombre" value="@Model.nombre" aria-label="Username" aria-describedby="basic-addon1">
+            </div>
+
+            <input type="text" name="id" value="@Model.id" hidden/>
+            <input type="text" name="email" value="@email" hidden/>
+
+            <div class="form-group">
+                <input type="submit" value="Guardar" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<a asp-action="CrearVersionProducto" asp-route-producto="@Model.id" class="btn btn-outline-dark mt-3">Crear versión del producto</a>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Version</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (VersionesProducto version in versiones)
+        {
+            <tr>
+                <td>@version.nombre</td>
+                <td>@Html.ActionLink("Editar", "EditarVersionProducto", "Productos", new { email = email, version = version.id}, new { @class="btn btn-outline-primary" })</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

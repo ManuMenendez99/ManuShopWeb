@@ -1,0 +1,50 @@
+﻿@{ 
+    Tienda tienda = ViewData["TIENDA"] as Tienda;
+    VersionesProducto version = ViewData["VERSION"] as VersionesProducto;
+    Producto producto = ViewData["PRODUCTO"] as Producto;
+    Marca marca = ViewData["MARCA"] as Marca;
+    int cantidad = int.Parse(ViewData["CANTIDAD"].ToString());
+    String email = ViewData["EMAIL"].ToString();
+}
+<form method="post">
+    <div class="input-group mb-3">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">Tienda</span>
+        </div>
+        <input type="text" class="form-control" disabled placeholder="Username" aria-label="Username" value="@tienda.nombre" aria-describedby="basic-addon1">
+    </div>
+
+    <div class="input-group mb-3">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">Marca</span>
+        </div>
+        <input type="text" class="form-control" disabled placeholder="Username" aria-label="Username" value="@marca.nombre" aria-describedby="basic-addon1">
+    </div>
+
+    <div class="input-group mb-3">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">Producto</span>
+        </div>
+        <input type="text" class="form-control" disabled placeholder="Username" aria-label="Username" value="@producto.nombre" aria-describedby="basic-addon1">
+    </div>
+
+    <div class="input-group mb-3">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">Version</span>
+        </div>
+        <input type="text" class="form-control" disabled placeholder="Username" aria-label="Username" value="@version.nombre" aria-describedby="basic-addon1">
+    </div>
+
+    <div class="input-group mb-3">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">Cantidad</span>
+        </div>
+        <input type="number" class="form-control" placeholder="Username" aria-label="Username" name="cantidad" value="@cantidad" aria-describedby="basic-addon1">
+    </div>
+    
+    
+    <input hidden name="tienda" value="@tienda.id" />
+    <input hidden name="producto" value="@version.id" />
+
+    <button type="submit" class="btn btn-primary"> Enviar </button>
+</form>

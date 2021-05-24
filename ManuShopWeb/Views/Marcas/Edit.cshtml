@@ -1,0 +1,33 @@
+﻿@model ManuShopWeb.Models.Marca
+
+@{
+    ViewData["Title"] = "Edit";
+    String email = ViewData["EMAIL"].ToString();
+}
+
+<h1>Edit</h1>
+
+<h4>Marca</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+             
+                <input name="id" hidden class="form-control" value="@Model.id" />
+                <input name="email" hidden class="form-control" value="@email" />
+               
+            <div class="form-group">
+                <label class="control-label">Nombre</label>
+                <input name="nombre" value="@Model.nombre" class="form-control" />
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Actualizar" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index" asp-action-email="@email">Volver al listado</a>
+</div>
+

@@ -1,0 +1,226 @@
+﻿@model IEnumerable<ManuShopWeb.Models.LineasTicket>
+
+@{
+    ViewData["Title"] = "VerTicket";
+    Mesa mesaEncontrada = ViewData["MESA"] as Mesa;
+    TiposMesa tipoMesa = ViewData["TIPOMESA"] as TiposMesa;
+    Ticket ticket = ViewData["TICKET"] as Ticket;
+    List<Producto> productos = ViewData["PRODUCTOS"] as List<Producto>;
+    List<VersionesProducto> versionesProductos = ViewData["VERSIONESPRODUCTOS"] as List<VersionesProducto>;
+    double total = double.Parse(ViewData["TOTAL"].ToString());
+    String origen = ViewData["ORIGEN"].ToString();
+    List<Almacen> almacen = ViewData["ALMACEN"] as List<Almacen>;
+    String error = ViewData["ERROR"] != null ? ViewData["ERROR"].ToString() : null;
+}
+
+@if (error != null)
+{
+    <div class="alert alert-warning" role="alert">
+        @error
+    </div>
+}
+@if (mesaEncontrada.estado == 0)
+{
+
+<p>
+    <a asp-action="InsertarProducto" asp-route-origen="@origen" asp-route-ticket="@ticket.id" class="btn btn-outline-dark">
+        @if (origen == "TRABAJADOR")
+        {
+            <span>
+                Añadir producto
+            </span>
+
+        }
+        else
+        {<span>
+                Pedir producto
+            </span>
+        }
+    </a>
+</p>
+
+<form method="post" class="my-3">
+    @if (origen == "TRABAJADOR")
+    {
+        <div class="form-group">
+            <label for="exampleInputPassword1">Descuento directo</label>
+            <input type="number" name="descuento" value="@ticket.descuentoGeneral" class="form-control" id="exampleInputPassword1" placeholder="Descuento directo">
+        </div>
+        <input hidden name="ticket" value="@ticket.id" />
+        <button type="submit" class="btn btn-outline-primary text-dark">Aplicar descuento directo</button>
+    }
+</form>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Producto
+            </th>
+            <th>
+                Tipo
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.descuento)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.detalles)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.cantidad)
+            </th>
+            <th>
+                Precio
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr class="@(item.cancelada == true ? "bg-light text-muted" : "")">
+                <td>
+                    @if (item.cancelada == true)
+                    {
+                        <del>
+                            @(productos.Where(x => x.id == versionesProductos.Where(x => x.id == item.versionProducto).First().producto).First().nombre);
+                        </del>
+                    }
+                    else
+                    {
+                        @(productos.Where(x => x.id == versionesProductos.Where(x => x.id == item.versionProducto).First().producto).First().nombre);
+                    }
+                </td>
+                <td>
+
+                    @if (item.cancelada == true)
+                    {
+                        <del>
+                            @(versionesProductos.Where(x => x.id == item.versionProducto).First().nombre != "default" ? versionesProductos.Where(x => x.id == item.versionProducto).First().nombre : "original")
+                        </del>
+                    }
+                    else
+                    {
+                        @(versionesProductos.Where(x => x.id == item.versionProducto).First().nombre != "default" ? versionesProductos.Where(x => x.id == item.versionProducto).First().nombre : "original");
+                    }
+
+
+                </td>
+                <td>
+                    @if (item.cancelada == true)
+                    {
+                        <del>
+                            @Html.DisplayFor(modelItem => item.descuento)
+                        </del>
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(modelItem => item.descuento)
+                    }
+
+                </td>
+                <td>
+                    @if (item.cancelada == true)
+                    {
+                        <del>
+                            @Html.DisplayFor(modelItem => item.detalles)
+                        </del>
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(modelItem => item.detalles)
+                    }
+                </td>
+                <td>
+                    @if (item.cancelada == true)
+                    {
+                        <del>
+                            @Html.DisplayFor(modelItem => item.cantidad)
+                        </del>
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(modelItem => item.cantidad)
+                    }
+
+                </td>
+                <td>
+                    @if (item.cancelada == true)
+                    {
+                        <del>
+                            @(versionesProductos.Where(x => x.id == item.versionProducto).First().precio)€
+                        </del>
+                    }
+                    else
+                    {
+                        @(versionesProductos.Where(x => x.id == item.versionProducto).First().precio + "€");
+                    }
+
+                </td>
+                <td>
+                    @if (item.cancelada == true)
+                    {
+                        @if (origen == "TRABAJADOR")
+                        {
+                            @Html.ActionLink("Editar linea", "EditLinea", new { id = item.id }, new { @class = "btn btn-outline-warning mx-2" })
+                            @Html.ActionLink("Activar", "ActivarLinea", new { id = item.id }, new { @class = "btn btn-outline-primary mx-2" })
+                        }
+                        else
+                        {
+                            if (almacen.Where(x => x.versionProducto == item.versionProducto).First().cantidad > 0)
+                            {
+                                @Html.ActionLink("+1", "SumarUnidad", new { id = item.id }, new { @class = "btn btn-outline-primary" })
+                            }
+                            else
+                            {
+                                @Html.ActionLink("+1", "SumarUnidad", new { id = item.id }, new { @class = "btn btn-outline-primary disabled" })
+                            }
+
+                        }
+                    }
+                    else
+                    {
+                        @if (origen == "TRABAJADOR")
+                        {
+                            @Html.ActionLink("Editar linea", "EditLinea", new { id = item.id }, new { @class = "btn btn-outline-warning mx-2" })
+                            @Html.ActionLink("Delete", "DeleteLinea", new { id = item.id }, new { @class = "btn btn-outline-danger mx-2" })
+                        }
+                        else
+                        {
+                            if (almacen.Where(x => x.versionProducto == item.versionProducto).First().cantidad > 0)
+                            {
+                                @Html.ActionLink("+1", "SumarUnidad", new { id = item.id }, new { @class = "btn btn-outline-primary" })
+                            }
+                            else
+                            {
+                                @Html.ActionLink("+1", "SumarUnidad", new { id = item.id }, new { @class = "btn btn-outline-primary disabled" })
+                            }
+
+                        }
+                    }
+
+                </td>
+            </tr>
+        }
+        <tr>
+            <td class="bg-light">Descuento General: @(ticket.descuentoGeneral)€</td>
+            <td colspan="6"><strong>Total: </strong>@(total) €</td>
+        </tr>
+    </tbody>
+</table>
+
+@if (origen == "TRABAJADOR")
+{
+    if (mesaEncontrada.estado == 2)
+    {
+        <a asp-action="CobrarTicket" asp-route-id="@ticket.id" class="w-100 btn btn-outline-danger">Cobrar ticket</a>
+    }
+}
+else
+{
+    if (mesaEncontrada.estado == 1)
+    {
+        <a asp-action="CerrarCuenta" asp-route-id="@ticket.id" class="w-100 btn btn-outline-danger">Pedir cuenta</a>
+    }
+}

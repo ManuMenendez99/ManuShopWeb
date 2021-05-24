@@ -1,0 +1,24 @@
+﻿@{
+    String email = ViewData["email"].ToString();
+}
+<div class="container">
+    <h1 class="display-4">Cerrar sesión</h1>
+    <p>¿Estas seguro de cerrar la sesión del correo @email?</p>
+    @Html.ActionLink("Cerrar sesión", "Login", new { }, new { @class = "btn btn-outline-primary w-25 mx-2", id = "botonLogout" })
+    <button type="button" class="btn btn-outline-danger w-25 mx-2" onclick="history.back()">Cancelar</button>
+</div>
+
+@section Scripts{
+    <script type="text/javascript">
+        $(function () {
+            $(window).ready(function () {
+
+
+                $("#botonLogout").on("click", function () {
+                    localStorage.removeItem("correo");
+                    localStorage.removeItem("password");
+                })
+            })
+        })
+    </script>
+}

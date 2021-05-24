@@ -1,0 +1,33 @@
+﻿@model ManuShopWeb.Models.Franquicia
+
+@{
+    ViewData["Title"] = "Details";
+    String origen = ViewData["ORIGEN"].ToString();
+    int? jefe = int.Parse(ViewData["JEFE"] != null ? ViewData["JEFE"].ToString() : "0" );
+}
+
+<h1>Detalles</h1>
+
+<div>
+    <h4>Franquicia</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.nombre)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.nombre)
+        </dd>
+    </dl>
+</div>
+<div>
+    @if (origen == "CLIENTE")
+    {
+        <a asp-action="AllFranquicias" class="btn btn-outline-dark">Volver al listado</a>
+    }
+    else
+    {
+    @Html.ActionLink("Editar esta franquicia", "Edit", new { id = Model.id }, new { @class="btn btn-outline-success my-2" }) <br />
+        <a asp-action="MisFranquicias" asp-route-id="@jefe" class="btn btn-outline-dark">Volver al listado</a>
+    }
+</div>

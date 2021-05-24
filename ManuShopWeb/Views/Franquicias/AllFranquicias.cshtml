@@ -1,0 +1,31 @@
+﻿@model IEnumerable<ManuShopWeb.Models.Franquicia>
+
+@{
+    ViewData["Title"] = "AllFranquicias";
+}
+
+<h1>AllFranquicias</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.nombre)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.nombre)
+            </td>
+            <td>
+                @Html.ActionLink("Escoger esta franquicia", "MisTiendas","Tiendas", new { franquicia = item.id, origen = "CLIENTE" }, new { @class = "btn btn-outline-success" })
+                @Html.ActionLink("Details", "Details", new { id = item.id, origen="CLIENTE" }, new { @class = "btn btn-outline-info" })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

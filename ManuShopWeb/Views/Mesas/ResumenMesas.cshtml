@@ -1,0 +1,92 @@
+﻿@model IEnumerable<ManuShopWeb.Models.Mesa>
+
+@{
+    ViewData["Title"] = "ResumenMesas";
+    List<TiposMesa> tiposMesa = ViewData["TIPOSMESA"] as List<TiposMesa>;
+    List<Ticket> tickets = ViewData["TICKETS"] as List<Ticket>;
+    int tienda = int.Parse(ViewData["TIENDA"].ToString());
+}
+
+<h1>Resumen de mesas</h1>
+
+<p>
+    <a asp-action="Create" asp-route-tienda="@tienda" class="btn btn-outline-dark">Crear mesa nueva</a>
+    <a asp-action="CrearTipoMesa" asp-route-tienda="@tienda" class="btn btn-outline-dark">Crear tipo de mesa</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Número
+            </th>
+            <th>
+                Tipo de mesa
+            </th>
+            <th>
+                Capacidad
+            </th>
+            <th>
+                Estado
+            </th>
+            @if (Model.Where(x => x.estado == 1 || x.estado == 2 || x.estado == 3).Count() != 0)
+            {
+                <th>Tickets</th>
+            }
+            @if (Model.Where(x => x.estado == 2).Count() != 0)
+            {
+                <th>Cuentas</th>
+            }
+            <th>Acciones</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.numero)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => tiposMesa.Where(x => x.id == item.tipoMesa).First().nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.capacidad)
+                </td>
+                <td>
+                    @(item.estado == 0 ? "libre" : item.estado == 1 ? "ocupada" : item.estado == 2 ? "pendiente de cobro" : item.estado == 3 ? "cerrada" : "error")
+                </td>
+                @if (Model.Where(x => x.estado == 1 || x.estado == 2 || x.estado == 3).Count() != 0)
+                {
+                    <td>
+                        @if (item.estado == 1 || item.estado == 2 || item.estado == 3)
+                        {
+                            @Html.ActionLink("Ver ticket", "VerTicket", "Tickets", new { ticket = tickets.Where(x => x.mesa == item.id).First().id, origen = "TRABAJADOR" }, new { @class = "btn btn-outline-primary" })
+                        }
+                    </td>
+                }
+                @if (Model.Where(x => x.estado == 2).Count() != 0)
+                {
+                <td>
+                    @if (item.estado == 2)
+                    {
+                        <strong><span class="text-danger">Cuenta pendiente</span></strong>
+                    }
+                </td>
+                }
+                <td>
+                    @Html.ActionLink("Editar", "Edit", new { id = item.id }, new { @class = "btn btn-outline-success" })
+                    @Html.ActionLink("Detalles", "Details", new { id = item.id, origen = "TRABAJADOR" }, new { @class = "btn btn-outline-info" })
+                    @if (item.estado == 0)
+                    {
+                        @Html.ActionLink("Eliminar", "Delete", new { id = item.id }, new { @class = "btn btn-outline-danger" })
+                    }
+                </td>
+            </tr>
+        }
+        @if (Model.Count() == 0)
+        {
+            <tr><td align="center" colspan="4"><em>No hay mesas todavía en esta tienda, crealas</em></td></tr>
+        }
+    </tbody>
+</table>

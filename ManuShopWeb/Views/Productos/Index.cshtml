@@ -1,0 +1,98 @@
+﻿@model IEnumerable<ManuShopWeb.Models.Producto>
+
+@{
+    ViewData["Title"] = "Index";
+    List<Almacen> almacenes = ViewData["ALMACEN"] as List<Almacen>;
+    List<Marca> marcas = ViewData["MARCAS"] as List<Marca>;
+    List<Franquicia> franquicias = ViewData["MISFRANQUICIAS"] as List<Franquicia>;
+    List<Tienda> tiendas = ViewData["MISTIENDAS"] as List<Tienda>;
+    List<Almacen> almacen = ViewData["MIALMACEN"] as List<Almacen>;
+    List<VersionesProducto> versiones = ViewData["VERSIONES"] as List<VersionesProducto>;
+    String origen = ViewData["ORIGEN"].ToString();
+    String email = ViewData["EMAIL"].ToString();
+}
+
+<h1 class="display-4">Productos</h1>
+
+@if (origen == "TRABAJADOR")
+{
+<p>
+    <a asp-action="Index" asp-controller="Marcas" class="btn btn-outline-dark my-2" asp-route-email="@email">Ver marcas</a> <br />
+    <a asp-action="Create" class="btn btn-outline-dark my-2" asp-route-email="@email">Crear nuevo producto</a> <br />
+    <a asp-action="StockDesdeCero" class="btn btn-outline-dark my-2" asp-route-email="@email">Generar stock</a>
+</p>
+}
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.marca)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.nombre)
+            </th>
+            <th>Version</th>
+            @if (origen == "TRABAJADOR")
+            {
+                <th>Tienda</th>
+                <th>Unidades</th>
+                <th>Acciones</th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            @if (origen == "TRABAJADOR")
+            {
+                if (almacen.Where(x => tiendas.Select(y => y.id).Contains(x.tienda) && versiones.Where(y => y.producto == item.id).Select(y => y.id).Contains(x.versionProducto)).Select(x => x.cantidad).Sum() != 0)
+                {
+                    @foreach (Tienda tienda in tiendas)
+                    {
+                        @foreach (VersionesProducto version in versiones.Where(x => x.producto == item.id))
+                        {
+                            @if (almacen.Where(x => x.tienda == tienda.id && x.versionProducto == version.id).Select(x => x.cantidad).Sum() != 0)
+                            {
+                            <tr>
+                                <td>
+                                    @marcas.First(x => x.id == item.marca).nombre
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.nombre)
+                                </td>
+                                <td>@version.nombre</td>
+                                <td>@tienda.nombre (@tienda.direccion)</td>
+                                <td>@almacen.Where(x => x.tienda == tienda.id && x.versionProducto == version.id).Select(x => x.cantidad).Sum()</td>
+                                <td>
+                                    @Html.ActionLink("Editar", "Edit", new { version = version.id, email = email }, new { @class = "btn btn-outline-success" })
+                                    @Html.ActionLink("Generer Stock", "Stock", new { id = version.id, email = email, tienda = tienda.id, cantidad = (almacen.Where(x => x.tienda == tienda.id && x.versionProducto == version.id).Select(x => x.cantidad).Sum()) }, new { @class = "btn btn-outline-primary" })
+                                </td>
+                            </tr>
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                @foreach (VersionesProducto version in versiones.Where(x => x.producto == item.id))
+                {
+                    <tr>
+                        <td>
+                            @marcas.Where(x => x.id == item.marca).First().nombre;
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.nombre)
+                        </td>
+                        <td>@version.nombre</td>
+                    </tr>
+                }
+            }
+
+        }
+        @if (Model.Count() == 0)
+        {
+            <tr><td colspan="@(origen == "TRABAJADOR" ? 6 : 3)"><em>Sin productos en la base de datos</em></td></tr>
+        }
+    </tbody>
+</table>

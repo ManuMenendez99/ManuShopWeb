@@ -1,0 +1,79 @@
+﻿@model ManuShopWeb.Models.Mesa
+
+@{
+    ViewData["Title"] = "Create";
+    int tienda = int.Parse(ViewData["TIENDA"].ToString());
+    List<TiposMesa> tiposMesas = ViewData["TIPOSMESA"] as List<TiposMesa>;
+}
+
+<h1>Create</h1>
+
+<h4>Mesa</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group" hidden>
+                <label asp-for="id" hidden class="control-label"></label>
+                <input asp-for="id" hidden class="form-control" />
+                <span asp-validation-for="id" hidden class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="numero" class="control-label"></label>
+                <input asp-for="numero" class="form-control" />
+                <span asp-validation-for="numero" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" asp-for="tipoMesa" for="inputGroupSelect01">Tipos de mesa</label>
+                    </div>
+                    <select asp-for="tipoMesa" class="custom-select" id="inputGroupSelect01">
+                        <option selected>Elige una opción...</option>
+                        @foreach (var tipo in tiposMesas)
+                        {
+                            <option value="@tipo.id">@tipo.nombre</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="capacidad" class="control-label"></label>
+                <input asp-for="capacidad" class="form-control" />
+                <span asp-validation-for="capacidad" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" asp-for="estado" for="inputGroupSelect01">Estado</label>
+                    </div>
+                    <select asp-for="estado" class="custom-select" id="inputGroupSelect01">
+                        <option selected>Elige una opción...</option>
+                        <option value="0">Libre</option>
+                        <option value="1">Ocupada</option>
+                        <option value="2">Pendiente de cobro</option>
+                        <option value="3">Cerrada</option>
+                        <option value="4">Error</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group" hidden>
+                <label asp-for="tienda" hidden class="control-label"></label>
+                <input asp-for="tienda" hidden value="@tienda" class="form-control" />
+                <span asp-validation-for="tienda" hidden class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Crear" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="ResumenMesas" asp-route-tienda="@tienda" class="btn btn-outline-dark">Volver al listado</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

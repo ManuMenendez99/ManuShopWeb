@@ -1,0 +1,32 @@
+﻿@model ManuShopWeb.Models.Tienda
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>Borrar</h1>
+
+<h3>¿Estas seguro de que quieres borrar esto?</h3>
+<div>
+    <h4>Tienda</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.nombre)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.nombre)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.direccion)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.direccion)
+        </dd>
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="submit" value="Eliminar" class="my-2 btn btn-danger" />
+    </form>
+    <a asp-action="MisTiendas" asp-route-franquicia="@Model.franquicia" asp-route-origen="TRABAJADOR" class="btn btn-outline-dark my-2">Volver al listado</a>
+</div>

@@ -1,0 +1,68 @@
+﻿@model IEnumerable<ManuShopWeb.Models.Tienda>
+
+@{
+    ViewData["Title"] = "MisTiendas";
+    String origen = ViewData["ORIGEN"].ToString();
+    int franquicia = int.Parse(ViewData["FRANQUICIA"].ToString());
+}
+
+<h1>Tiendas de la franquicia</h1>
+
+@if (origen == "TRABAJADOR")
+{
+    <p>
+        <a asp-action="Create" asp-route-franquicia="@franquicia" class="btn btn-outline-dark">Crear nuevo</a>
+    </p>
+}
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Nombre
+            </th>
+            <th>
+                Dirección
+            </th>
+            @if (origen == "TRABAJADOR")
+            {
+                <th>Acciones</th>
+            }
+            <th>Elegir</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.direccion)
+                </td>
+                @if (origen == "TRABAJADOR")
+                {
+                    <td>
+                        @Html.ActionLink("Editar", "Edit", new { id = item.id }, new { @class = "btn btn-outline-success" })
+                        @Html.ActionLink("Detalles", "Details", new { id = item.id, origen = origen }, new { @class = "btn btn-outline-info" })
+                        @Html.ActionLink("Eliminar", "Delete", new { id = item.id }, new { @class = "btn btn-outline-danger" })
+                    </td>
+                }
+                <td>
+                    @if (origen == "TRABAJADOR")
+                    {
+                        @Html.ActionLink("Escoger tienda", "ResumenMesas", "Mesas", new { tienda = item.id }, new { @class = "btn btn-success" })
+                    }
+                    else
+                    {
+                        @Html.ActionLink("Escoger tienda", "BuscarMesa", "Mesas", new { tienda = item.id }, new { @class = "btn btn-success" })
+                    }
+                </td>
+            </tr>
+        }
+        @if (Model.Count() == 0)
+        {
+            <tr><td align="center" colspan="@(origen == "TRABAJADOR" ? 4 : 3)"><em>No hay tiendas en esta franquicia</em></td></tr>
+        }
+    </tbody>
+</table>
